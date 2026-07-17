@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Katalog susu kambing bubuk Alqarni. Pilih produk dan pesan dengan mudah melalui WhatsApp."
+    />
+    <title>Alqarni Goat Milk | Katalog Susu Kambing Bubuk</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="container header-inner">
+        <a class="brand" href="#home" aria-label="Alqarni Goat Milk - Halaman utama">
+          <span class="brand-mark" aria-hidden="true">AG</span>
+          <span>
+            <strong>ALQARNI</strong>
+            <small>Goat Milk</small>
+          </span>
+        </a>
+
+        <nav class="desktop-nav" aria-label="Navigasi utama">
+          <a href="#produk">Produk</a>
+          <a href="#manfaat">Keunggulan</a>
+          <a href="#cara-pesan">Cara Pesan</a>
+          <a href="#faq">FAQ</a>
+        </nav>
+
+        <button class="cart-button" id="cartButton" type="button" aria-label="Buka keranjang">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M3 4h2l2.2 9.2a2 2 0 0 0 2 1.5h7.9a2 2 0 0 0 1.9-1.4L21 7H7" />
+            <circle cx="10" cy="19" r="1.5" />
+            <circle cx="18" cy="19" r="1.5" />
+          </svg>
+          <span>Keranjang</span>
+          <strong id="cartCount">0</strong>
+        </button>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero" id="home">
+        <div class="container hero-grid">
+          <div class="hero-copy">
+            <span class="eyebrow">Susu kambing bubuk pilihan keluarga</span>
+            <h1>Nutrisi praktis, rasa nyaman, pesan langsung lewat WhatsApp.</h1>
+            <p>
+              Temukan pilihan Alqarni dalam kemasan sachet dan pouch. Stok siap kirim,
+              kemasan aman, serta admin siap membantu memilih produk sesuai kebutuhan Anda.
+            </p>
+
+            <div class="hero-actions">
+              <a class="button button-primary" href="#produk">Lihat Produk</a>
+              <button class="button button-secondary" type="button" data-whatsapp-general>
+                Tanya Admin
+              </button>
+            </div>
+
+            <div class="trust-row" aria-label="Informasi kepercayaan toko">
+              <span>BPOM</span>
+              <span>Halal</span>
+              <span>Ready Stock</span>
+              <span>Bubble Wrap</span>
+            </div>
+          </div>
+
+          <div class="hero-visual" aria-label="Tempat gambar produk utama">
+            <div class="hero-image-placeholder">
+              <span class="placeholder-label">GAMBAR HERO</span>
+              <strong>Produk + susu dalam gelas</strong>
+              <small>Rekomendasi: 1200 × 1000 px, PNG transparan</small>
+            </div>
+            <div class="floating-card floating-card-top">
+              <strong>80%</strong>
+              <span>Susu kambing*</span>
+            </div>
+            <div class="floating-card floating-card-bottom">
+              <strong>Senin–Sabtu</strong>
+              <span>Pengiriman setiap hari</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="quick-info">
+        <div class="container quick-info-grid">
+          <article>
+            <span class="info-icon">✓</span>
+            <div><strong>100% Original</strong><small>Produk dari sumber tepercaya</small></div>
+          </article>
+          <article>
+            <span class="info-icon">▣</span>
+            <div><strong>Packing Aman</strong><small>Bubble wrap tebal tanpa biaya tambahan</small></div>
+          </article>
+          <article>
+            <span class="info-icon">↗</span>
+            <div><strong>Pengiriman Cepat</strong><small>Pesanan diproses Senin–Sabtu</small></div>
+          </article>
+          <article>
+            <span class="info-icon">☏</span>
+            <div><strong>Konsultasi WhatsApp</strong><small>Konfirmasi stok, ongkir, dan pembayaran</small></div>
+          </article>
+        </div>
+      </section>
+
+      <section class="section" id="produk">
+        <div class="container">
+          <div class="section-heading">
+            <div>
+              <span class="eyebrow">Pilihan produk</span>
+              <h2>Pilih ukuran sesuai kebutuhan</h2>
+            </div>
+            <p>Harga di bawah adalah data contoh dan dapat Anda ubah melalui <code>script.js</code>.</p>
+          </div>
+
+          <div class="product-grid" id="productGrid"></div>
+        </div>
+      </section>
+
+      <section class="section section-muted" id="manfaat">
+        <div class="container feature-layout">
+          <div class="feature-image-placeholder" aria-label="Tempat foto gaya hidup">
+            <span class="placeholder-label">GAMBAR LIFESTYLE</span>
+            <strong>Orang dewasa menikmati susu hangat</strong>
+            <small>Rekomendasi: 900 × 1100 px, suasana pagi yang natural</small>
+          </div>
+
+          <div class="feature-content">
+            <span class="eyebrow">Mengapa memilih Alqarni?</span>
+            <h2>Praktis untuk melengkapi asupan nutrisi harian.</h2>
+            <p>
+              Katalog ini menggunakan bahasa klaim yang lebih aman. Pastikan seluruh manfaat,
+              komposisi, nomor izin edar, serta aturan minum yang ditampilkan sama persis dengan
+              label dan materi resmi yang telah disetujui.
+            </p>
+
+            <div class="benefit-list">
+              <article>
+                <span>01</span>
+                <div><strong>Kandungan susu kambing tinggi*</strong><p>Gunakan persentase sesuai komposisi resmi pada kemasan.</p></div>
+              </article>
+              <article>
+                <span>02</span>
+                <div><strong>Rasa lebih mudah dinikmati</strong><p>Deskripsikan rasa dan aroma secara faktual tanpa menjanjikan hasil medis.</p></div>
+              </article>
+              <article>
+                <span>03</span>
+                <div><strong>Kemasan praktis</strong><p>Tersedia contoh varian sachet, box, dan standing pouch.</p></div>
+              </article>
+              <article>
+                <span>04</span>
+                <div><strong>Pemesanan dibantu admin</strong><p>Stok, ongkir, transfer, dan opsi COD dikonfirmasi melalui WhatsApp.</p></div>
+              </article>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="cara-pesan">
+        <div class="container">
+          <div class="section-heading centered">
+            <span class="eyebrow">Cara pemesanan</span>
+            <h2>Dari katalog ke WhatsApp dalam tiga langkah</h2>
+          </div>
+
+          <div class="steps-grid">
+            <article>
+              <span>1</span>
+              <h3>Pilih produk</h3>
+              <p>Tambahkan satu atau beberapa produk ke keranjang.</p>
+            </article>
+            <article>
+              <span>2</span>
+              <h3>Kirim pesanan</h3>
+              <p>Tekan checkout untuk membuat pesan WhatsApp otomatis.</p>
+            </article>
+            <article>
+              <span>3</span>
+              <h3>Konfirmasi admin</h3>
+              <p>Admin mengonfirmasi stok, ongkir, metode transfer, atau ketersediaan COD.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section guarantee-section">
+        <div class="container guarantee-grid">
+          <div>
+            <span class="eyebrow eyebrow-light">Jaminan toko</span>
+            <h2>Belanja lebih tenang dari pemesanan sampai produk diterima.</h2>
+          </div>
+          <div class="guarantee-list">
+            <article><strong>Garansi produk rusak/cacat</strong><p>Sertakan video unboxing sesuai kebijakan toko untuk proses klaim.</p></article>
+            <article><strong>Jaminan produk original</strong><p>Gunakan redaksi garansi sesuai syarat tertulis yang benar-benar berlaku.</p></article>
+            <article><strong>Packing bubble wrap</strong><p>Produk dikemas untuk membantu mengurangi risiko kerusakan saat pengiriman.</p></article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section section-muted" id="faq">
+        <div class="container faq-layout">
+          <div>
+            <span class="eyebrow">Pertanyaan umum</span>
+            <h2>Informasi sebelum memesan</h2>
+            <p>Isi jawaban berikut dapat disesuaikan dengan kebijakan toko Anda.</p>
+          </div>
+          <div class="faq-list">
+            <details open>
+              <summary>Bagaimana cara melakukan pembayaran?</summary>
+              <p>Setelah pesan WhatsApp dikirim, admin akan memberikan total akhir dan instruksi transfer. Opsi COD hanya ditawarkan pada wilayah atau kurir yang mendukung.</p>
+            </details>
+            <details>
+              <summary>Berapa lama pesanan diproses?</summary>
+              <p>Pesanan diproses pada hari operasional Senin–Sabtu. Waktu kirim mengikuti alamat tujuan dan layanan kurir.</p>
+            </details>
+            <details>
+              <summary>Bagaimana aturan minumnya?</summary>
+              <p>Ikuti aturan minum yang tercantum pada kemasan resmi. Untuk kondisi kesehatan tertentu, konsultasikan lebih dahulu dengan tenaga kesehatan.</p>
+            </details>
+            <details>
+              <summary>Apakah produk dapat menyembuhkan penyakit?</summary>
+              <p>Produk pangan bukan pengganti diagnosis atau terapi medis. Hindari klaim menyembuhkan asma, rematik, atau penyakit lain kecuali secara khusus diizinkan pada label resmi.</p>
+            </details>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container footer-grid">
+        <div>
+          <a class="brand brand-footer" href="#home">
+            <span class="brand-mark" aria-hidden="true">AG</span>
+            <span><strong>ALQARNI</strong><small>Goat Milk</small></span>
+          </a>
+          <p>Katalog produk susu kambing bubuk dengan pemesanan melalui WhatsApp.</p>
+        </div>
+        <div>
+          <strong>Informasi produk</strong>
+          <p>BPOM: MD 061282001100213*</p>
+          <p>Halal: ID34410042159630226*</p>
+        </div>
+        <div>
+          <strong>Catatan</strong>
+          <p>*Verifikasi seluruh nomor, komposisi, harga, klaim, dan garansi sebelum website dipublikasikan.</p>
+        </div>
+      </div>
+      <div class="container footer-bottom">
+        <span>© <span id="currentYear"></span> Alqarni Goat Milk.</span>
+        <span>Template katalog WhatsApp.</span>
+      </div>
+    </footer>
+
+    <button class="floating-whatsapp" type="button" data-whatsapp-general aria-label="Chat dengan admin melalui WhatsApp">
+      <span>WA</span>
+      <strong>Chat Admin</strong>
+    </button>
+
+    <div class="drawer-backdrop" id="drawerBackdrop" hidden></div>
+    <aside class="cart-drawer" id="cartDrawer" aria-hidden="true" aria-label="Keranjang belanja">
+      <div class="drawer-header">
+        <div>
+          <span class="eyebrow">Pesanan Anda</span>
+          <h2>Keranjang</h2>
+        </div>
+        <button class="icon-button" id="closeCartButton" type="button" aria-label="Tutup keranjang">×</button>
+      </div>
+      <div class="cart-items" id="cartItems"></div>
+      <div class="cart-summary">
+        <div><span>Subtotal produk</span><strong id="cartSubtotal">Rp0</strong></div>
+        <small>Ongkir dan metode pembayaran akan dikonfirmasi oleh admin.</small>
+        <button class="button button-primary button-full" id="checkoutButton" type="button">
+          Checkout via WhatsApp
+        </button>
+      </div>
+    </aside>
+
+    <template id="productCardTemplate">
+      <article class="product-card">
+        <div class="product-image-wrap">
+          <img class="product-image" src="" alt="" />
+          <span class="product-badge"></span>
+        </div>
+        <div class="product-content">
+          <span class="product-size"></span>
+          <h3 class="product-name"></h3>
+          <p class="product-description"></p>
+          <div class="product-meta">
+            <strong class="product-price"></strong>
+            <small class="product-stock"></small>
+          </div>
+          <div class="product-actions">
+            <button class="button button-outline add-to-cart" type="button">+ Keranjang</button>
+            <button class="button button-primary buy-now" type="button">Pesan</button>
+          </div>
+        </div>
+      </article>
+    </template>
+
+    <script src="script.js"></script>
+  </body>
+</html>

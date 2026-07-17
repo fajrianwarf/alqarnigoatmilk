@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000" role="img" aria-labelledby="title desc">
+  <title id="title">Placeholder paket dua pouch Alqarni</title>
+  <desc id="desc">Ganti dengan foto dua standing pouch produk asli.</desc>
+  <rect width="1000" height="1000" fill="#f4efe3"/>
+  <circle cx="500" cy="420" r="310" fill="#e1e9e6"/>
+  <g transform="translate(165 210) rotate(-4 190 260)">
+    <path d="M30 0 H350 L380 520 H0Z" fill="#1f514c"/>
+    <rect x="50" y="45" width="280" height="120" rx="12" fill="#f8f3e8"/>
+    <text x="190" y="110" text-anchor="middle" font-family="Arial" font-weight="700" font-size="36" fill="#173b38">ALQARNI</text>
+    <path d="M20 230 C130 155 240 300 360 220 L375 490 H5Z" fill="#fff" opacity=".9"/>
+  </g>
+  <g transform="translate(475 210) rotate(4 190 260)">
+    <path d="M30 0 H350 L380 520 H0Z" fill="#1f514c"/>
+    <rect x="50" y="45" width="280" height="120" rx="12" fill="#f8f3e8"/>
+    <text x="190" y="110" text-anchor="middle" font-family="Arial" font-weight="700" font-size="36" fill="#173b38">ALQARNI</text>
+    <path d="M20 230 C130 155 240 300 360 220 L375 490 H5Z" fill="#fff" opacity=".9"/>
+  </g>
+  <text x="500" y="845" text-anchor="middle" font-family="Arial" font-weight="700" font-size="32" fill="#173b38">FOTO PAKET 2 POUCH</text>
+  <text x="500" y="890" text-anchor="middle" font-family="Arial" font-size="22" fill="#506966">Rekomendasi 1000 × 1000 px</text>
+</svg>

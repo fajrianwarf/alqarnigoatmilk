@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000" role="img" aria-labelledby="title desc">
+  <title id="title">Placeholder produk Alqarni 250 gram</title>
+  <desc id="desc">Ganti dengan foto produk asli format persegi.</desc>
+  <rect width="1000" height="1000" fill="#f4efe3"/>
+  <circle cx="500" cy="420" r="310" fill="#dce8e3"/>
+  <rect x="320" y="210" width="360" height="520" rx="38" fill="#1f514c"/>
+  <rect x="350" y="250" width="300" height="130" rx="14" fill="#f8f3e8"/>
+  <text x="500" y="315" text-anchor="middle" font-family="Arial" font-weight="700" font-size="42" fill="#173b38">ALQARNI</text>
+  <text x="500" y="355" text-anchor="middle" font-family="Arial" font-size="20" fill="#9f6e27">GOAT MILK</text>
+  <path d="M350 420 C450 360 570 500 650 420 L650 650 L350 650Z" fill="#ffffff" opacity=".9"/>
+  <text x="500" y="520" text-anchor="middle" font-family="Arial" font-weight="700" font-size="35" fill="#173b38">250 GRAM</text>
+  <text x="500" y="565" text-anchor="middle" font-family="Arial" font-size="22" fill="#506966">10 SACHET</text>
+  <text x="500" y="845" text-anchor="middle" font-family="Arial" font-weight="700" font-size="32" fill="#173b38">GANTI DENGAN FOTO ASLI</text>
+  <text x="500" y="890" text-anchor="middle" font-family="Arial" font-size="22" fill="#506966">Rekomendasi 1000 × 1000 px</text>
+</svg>
