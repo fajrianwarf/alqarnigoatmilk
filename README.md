@@ -1,90 +1,64 @@
 # Alqarni Goat Milk
 
-Katalog statis HTML, CSS, dan JavaScript dengan pemesanan WhatsApp. Tidak memerlukan server aplikasi atau instalasi package untuk menjalankan website.
+Katalog statis HTML, CSS, dan JavaScript. Data toko dibaca langsung dari Google Sheets publik saat halaman dibuka atau dimuat ulang.
 
-## Pratinjau lokal
+## Sumber data
 
-Dari folder proyek, jalankan `python -m http.server 4173 --bind 127.0.0.1`, lalu buka http://127.0.0.1:4173. Live Server juga dapat digunakan. HTTP lokal disarankan agar ikon SVG dan koneksi Sheets bekerja seperti saat hosting.
+Alamat publikasi dan ID tab berada di `config.js`. Tidak ada daftar produk, harga, nomor WhatsApp, gambar katalog, maupun angka penjualan cadangan di kode. Tidak ada cache data toko di localStorage. Google dapat membutuhkan beberapa menit untuk memperbarui hasil publikasinya.
 
-## Mengubah produk dan harga
+### Tab list-harga
 
-Pengaturan toko, produk, statistik, dan testimoni berada di `config.js`.
+Kolom wajib: `produk`, `jenis`, `satuan`, `harga`, `deskripsi`, `gambar`.
 
-- Nomor WhatsApp: `6285163007381`.
-- Harga berupa angka rupiah tanpa pemisah ribuan.
-- `price: null` menampilkan “Tanya harga”. Produk tetap bisa dipesan; keranjang dengan harga belum tersedia tidak menampilkan subtotal sebagai total lengkap.
-- Setiap produk memakai ID tetap agar keranjang tersimpan tetap cocok setelah harga diperbarui.
-- Stok saat ini dikonfirmasi admin. Screenshot harga memuat listing aktif dan habis yang tampak duplikat, sehingga belum menjadi sumber stok langsung.
+- `produk`: nama produk.
+- `jenis`: label pada kartu produk.
+- `satuan`: ukuran atau isi paket.
+- `harga`: rupiah bulat, mendukung angka biasa atau format mata uang dengan pemisah ribuan titik/koma. Kosong menampilkan “Tanya harga”.
+- `deskripsi`: deskripsi produk.
+- `gambar`: URL HTTPS gambar. Tautan berbagi file Google Drive diterjemahkan menjadi URL thumbnail. File harus dapat dibaca publik. Jika gambar gagal dimuat, ditampilkan “Foto belum tersedia”, bukan foto cadangan lokal.
+- `id` (opsional): ID unik yang tetap. Tanpa kolom ini, identitas keranjang berasal dari nama + satuan; perubahan nama/satuan membuat item lama tidak lagi cocok. Perubahan urutan baris tidak memengaruhi kecocokan.
 
-Acuan harga: screenshot yang diberikan pemilik pada 8 September 2026.
+Tambah atau hapus baris untuk mengubah katalog. Semua nilai dari Sheets dirender sebagai teks biasa, bukan HTML.
 
-| Produk | Harga acuan |
-| --- | ---: |
-| Box 250 gram / 10 sachet | Rp85.000 |
-| Pouch 500 gram | Rp150.000 |
-| 2 box | Rp160.000 |
-| 2 pouch | Rp255.000 |
-| 5 box | Rp375.000 |
-| 5 pouch | Belum tersedia |
+### Tab terjual
 
-## Angka penjualan dari Google Sheets
+Dua baris pasangan nama pengaturan dan nilai:
 
-Tidak perlu akses edit, akun layanan, API key, atau backend. Jalur ini menggunakan satu tab publik khusus statistik, tanpa data pelanggan.
+- Kolom A: `banyak terjual`; kolom B: jumlah bulat tanpa pemisah ribuan.
+- Kolom A: `nomor whatsapp`; kolom B: nomor WhatsApp internasional. Format +62 atau nomor lokal diawali 0 juga dinormalisasi.
 
-1. Buat spreadsheet terpisah dengan tab `Statistik`.
-2. Isi A1:C1 dengan `jumlah`, `satuan`, `periode`.
-3. Isi tepat satu baris data di A2:C2: angka penjualan nyata; satuan seperti `kemasan terjual`; periode seperti `Sejak Januari 2026`.
-4. Kolom jumlah harus berupa bilangan bulat tanpa pemisah ribuan: `1250`, bukan `1.250`. Jangan menambahkan tanda `+`. Angka contoh ini tidak otomatis dipakai website.
-5. Pilih **File > Bagikan > Publikasikan ke web**. Pilih hanya tab `Statistik`, format **Comma-separated values (.csv)**, lalu publikasikan.
-6. Salin tautan hasil publikasi ke `STORE_CONFIG.sales.csvUrl` di `config.js`. Tautan publikasi CSV berbeda dari tautan edit/share spreadsheet biasa.
-7. Biarkan publikasi ulang otomatis aktif. Perubahan Google dapat membutuhkan beberapa menit sebelum terlihat.
+Jumlah terjual dianimasikan dari 0 ke nilai sumber selama 1,3 detik, sekali ketika terlihat. Perangkat dengan preferensi mengurangi animasi langsung menampilkan nilai akhir.
 
-Setelah URL tersedia, uji koneksi langsung di browser. Jika kebijakan akun Google membatasi publikasi atau browser tidak dapat membaca URL, koneksi perlu disesuaikan; belum ada sheet asli yang dihubungkan pada checkpoint ini.
+Nomor WhatsApp digunakan oleh semua tombol pemesanan, pertanyaan admin, cek ongkir, keranjang, dan tautan kontak footer.
 
-`fallback` boleh diisi objek dengan `jumlah`, `satuan`, `periode` yang sama menggunakan angka nyata yang sudah dikonfirmasi. Tanpa data valid, bagian statistik disembunyikan.
+## Saat sumber tidak tersedia
 
-Perilaku:
+Website membatasi waktu permintaan Sheets menjadi 10 detik dan mencoba ulang satu kali untuk gangguan jaringan/server. Akses ditolak tidak diulang otomatis. Jika tetap gagal, tersedia pesan dan tombol coba lagi. Jika nomor kontak belum tersedia, pemesanan dinonaktifkan. Tidak ada harga atau nomor lama yang digunakan sebagai cadangan. Keranjang pilihan pengguna tetap disimpan terpisah; harga dihitung dari katalog yang berhasil dimuat pada kunjungan berikutnya.
 
-- Dibaca satu kali saat halaman dibuka, memakai cache browser lima menit per URL.
-- Tidak polling terus menerus. Muat ulang halaman setelah masa cache habis untuk mengambil pembaruan.
-- Jika Sheets gagal: gunakan data terakhir yang valid atau fallback. Jika keduanya tidak ada, sembunyikan angka.
-- Angka dihitung secara visual selama 1,3 detik, sekali saat terlihat. Pengaturan perangkat untuk mengurangi animasi dihormati.
-- Statistik bukan hitungan klik WhatsApp. Penjualan berhasil direkap pemilik toko.
+Kegagalan testimoni tidak mematikan katalog/WhatsApp. Angka penjualan dan nomor WhatsApp divalidasi terpisah. Baris produk dengan nama/harga/ID tidak valid dilewati dengan pemberitahuan, sementara produk valid tetap tampil. Gambar tidak valid menampilkan keterangan pengganti tanpa menghapus produknya. Detail diagnostik tersedia di konsol browser.
 
-Panduan resmi: https://support.google.com/docs/answer/183965
+`errors.js` menangani error JavaScript yang tidak tertangkap, promise gagal, serta file script gagal dimuat dengan pesan pemulihan dan tombol muat ulang. Ini bukan jaminan mencegah semua bug; masalah yang tetap terjadi setelah muat ulang perlu diperbaiki dari penyebabnya.
 
-## Testimoni
+## Tab testimoni
 
-Bagian testimoni sudah memiliki kartu responsif: grid pada laptop dan daftar yang dapat digeser pada ponsel. Bagian ini disembunyikan selama array `testimonials` kosong.
+Tab publik `testimoni` memakai kolom `nama`, `ulasan`, `produk`, `rating`. Rating boleh kosong atau bilangan bulat 1–5. Kolom `produk` dicocokkan dengan nama produk katalog untuk menampilkan gambar. Jika tidak cocok atau katalog gagal, ulasan tetap tampil dengan nama produk sebagai teks.
 
-Tambahkan hanya ulasan asli Alqarni yang mendapat izin untuk ditampilkan. Setiap entri berisi `name`, `quote`, dan opsional `productId` serta `rating` (bilangan bulat 1–5). Jika pelanggan tidak memberi bintang, hilangkan `rating`.
+Kolom opsional `tampilkan`: bila kolom ini ada, hanya baris bernilai `ya` yang tampil. Bila kolom tidak ada, seluruh baris valid tampil sesuai struktur sheet saat ini. Kolom opsional `sumber` ditampilkan sebagai keterangan asal ulasan. Teks ulasan dimasukkan sebagai teks biasa, bukan HTML. Ulasan yang tidak valid dilewati dan diberi pemberitahuan; daftar kosong disembunyikan. Tombol muat ulang ulasan hanya mengambil tab testimoni.
 
-Referensi screenshot Etawaku digunakan untuk pola layout, bukan sumber kutipan atau rating Alqarni. Teks ulasan dan statistik selalu dimasukkan sebagai teks biasa, bukan HTML.
+## Aset dan konten halaman
 
-## Gambar dan ikon
+Gambar katalog dan gambar produk pada bagian keunggulan memakai URL dari Sheets. Gambar keunggulan mengikuti produk pertama pada daftar. Foto produk lokal tidak lagi dipakai katalog.
 
-- File sumber di `foto-produk` dipertahankan utuh.
-- Website memakai WebP di `assets/images`: foto katalog lebar 800 px, hero 1200 px dan alternatif mobile 640 px, logo 400 px.
-- Logo dan hero dimuat langsung. Foto katalog, keunggulan, dan testimoni memakai lazy loading serta ukuran eksplisit agar layout stabil.
-- Ikon SVG lokal dari Lucide 0.468.0 berada di `assets/icons.svg`; lisensi disertakan di `assets/LUCIDE-LICENSE`. Tidak bergantung pada CDN ikon.
-- Foto promosi bukan bukti komposisi atau izin edar. Gunakan label resmi yang terbaca untuk memfinalkan informasi tersebut.
+Logo, favicon, dan foto hero masih lokal karena sumber untuk ketiganya belum tersedia di Sheets. Teks hero, keunggulan, FAQ, promo ongkir, serta label antarmuka masih berada di `index.html`/`script.js`. Sheets saat ini baru menyediakan data katalog, penjualan, dan nomor kontak.
 
-## Konten yang masih menunggu pemilik
+Ikon SVG lokal menggunakan Lucide; lisensi berada di `assets/LUCIDE-LICENSE`. Gambar di bawah layar pertama memakai lazy loading. Testimoni tampil sebagai grid pada laptop dan kartu yang dapat digeser di ponsel.
 
-- Harga paket 5 pouch dan konfirmasi harga lainnya.
-- Cakupan gratis ongkir, minimum pembelian, serta batas subsidi bila ada.
-- Angka penjualan nyata, satuan/periode, dan URL publikasi Sheets.
-- Testimoni asli dan izin penayangan.
-- Foto label resmi: komposisi, kandungan gizi, petunjuk seduh/takaran air, izin edar, dan sertifikat halal bila ingin ditampilkan.
+## Pratinjau
 
-Aturan minum 2 kali sehari, 25 gram per gelas berasal dari instruksi pemilik; takaran air belum diberikan. Konten menggunakan bahasa pelengkap nutrisi sesuai usulan diskusi. Klaim terapi nyeri sendi/pernapasan, persentase kandungan, dan nomor izin dari template tidak diteruskan tanpa sumber resmi yang sesuai.
+Jalankan `python -m http.server 4173 --bind 127.0.0.1`, lalu buka http://127.0.0.1:4173. Live Server juga dapat digunakan. Gunakan HTTP lokal agar pembacaan Sheets dan SVG bekerja seperti saat hosting.
 
-Deployment ditunda sesuai permintaan pemilik.
+Tidak diperlukan package tambahan untuk menjalankan website. Tidak ada perubahan deployment pada pekerjaan ini.
 
-## Pemeriksaan
+## Pemeriksaan seperlunya
 
-- `node --test tests/sales.test.cjs`: format CSV, data tidak valid, cache, gangguan jaringan, penyimpanan ditolak, dan fallback.
-- `node tests/browser.cjs`: membutuhkan Playwright dan Chrome serta server lokal port 4173. Dapat memilih Edge dengan variabel `BROWSER_CHANNEL=msedge`.
-- Pemeriksaan browser mencakup lebar 320, 375, 390, 768, 1024, 1366, dan 1920 px, gambar, harga dan nomor WA, keranjang termasuk harga belum diketahui, persistensi, fokus keyboard, serta fixture statistik dan testimoni.
-- Screenshot uji berada di `.test-artifacts/` (diabaikan Git). Data uji disuntikkan saat pengujian saja dan tidak disimpan dalam konfigurasi toko.
-- Koneksi Sheets asli baru bisa diperiksa setelah tautan CSV diberikan. Pengujian tombol WhatsApp memeriksa tautan/pesan tanpa mengirim pesan.
+`node --test tests/data.test.cjs` menjalankan lima pengujian terarah tanpa package tambahan: CSV dengan kutipan, baris produk/gambar tidak valid, penjualan dan kontak terpisah, filter/rating testimoni, serta retry jaringan dan akses ditolak. Pemeriksaan browser langsung mencakup pemuatan empat ulasan, kegagalan akses tab testimoni tanpa mematikan katalog/kontak, dan pemulihan melalui tombol coba lagi.

@@ -8,11 +8,14 @@
   <title>Alqarni Goat Milk | Nutrisi Alami Keluarga</title>
   <link rel="icon" href="assets/images/logo.webp" type="image/webp" />
   <link rel="stylesheet" href="styles.css" />
-  <script src="config.js" defer></script>
-  <script src="sales.js" defer></script>
-  <script src="script.js" defer></script>
+  <script src="errors.js?v=sheets-3"></script>
+  <script src="config.js?v=sheets-3" defer></script>
+  <script src="sales.js?v=sheets-3" defer></script>
+  <script src="testimonials.js?v=sheets-3" defer></script>
+  <script src="script.js?v=sheets-3" defer></script>
 </head>
 <body>
+  <div id="appError" class="app-error" role="alert" hidden><span id="appErrorText"></span><button id="reloadPage" type="button" class="button button-secondary">Muat ulang</button></div>
   <a class="skip-link" href="#main">Lewati ke konten</a>
   <div class="announcement">Gratis ongkir Jogja &amp; sekitarnya <span>· Via Wahana Express, cek cakupan dengan admin</span></div>
   <header class="site-header">
@@ -63,13 +66,13 @@
     <section class="section" id="produk">
       <div class="container">
         <div class="section-heading"><div><span class="eyebrow">Pilihan produk</span><h2>Satu kebaikan.<br />Beragam pilihan kemasan.</h2></div><p>Untuk diri sendiri, persediaan di rumah, atau berbagi bersama keluarga. Stok dan harga akhir dikonfirmasi oleh admin.</p></div>
-        <div class="product-grid" id="productGrid"></div>
-        <noscript><p>Aktifkan JavaScript untuk memilih produk, atau <a href="https://wa.me/6285163007381">hubungi admin melalui WhatsApp</a>.</p></noscript>
+        <p id="catalogStatus" role="status">Memuat katalog…</p><button id="retryCatalog" class="button button-secondary" type="button" hidden>Coba lagi</button><div class="product-grid" id="productGrid"></div>
+        <noscript><p>Aktifkan JavaScript untuk memuat katalog dan kontak dari Google Sheets.</p></noscript>
       </div>
     </section>
     <section class="section section-muted" id="manfaat">
       <div class="container feature-layout">
-        <div class="feature-visual"><img src="assets/images/box-250.webp" alt="Box Alqarni 250 gram" width="800" height="800" loading="lazy" decoding="async" /><div class="feature-note"><span class="eyebrow">Momen kecil, setiap hari</span><p>Segelas hangat untuk<br />melengkapi hari Anda.</p></div></div>
+        <div class="feature-visual"><img id="featureProductImage" hidden alt="" width="800" height="800" loading="lazy" decoding="async" /><div class="feature-note"><span class="eyebrow">Momen kecil, setiap hari</span><p>Segelas hangat untuk<br />melengkapi hari Anda.</p></div></div>
         <div class="feature-content">
           <span class="eyebrow">Keunggulan</span><h2>Mengapa memilih Alqarni?</h2><p>Nikmati susu kambing pilihan dengan cara yang praktis, dari seduhan pertama hingga rutinitas bersama keluarga.</p>
           <div class="benefit-list">
@@ -86,7 +89,7 @@
       <div class="container preparation-grid"><div><span class="eyebrow">Cara menikmati</span><h2>Rutinitas hangat,<br />sesederhana menyeduh.</h2></div><div class="serving-card"><svg class="icon" aria-hidden="true"><use href="assets/icons.svg#cup-soda" /></svg><strong>25 <small>gram / gelas</small></strong><span>2 kali sehari</span><p>Ikuti petunjuk penyajian pada kemasan untuk takaran air dan cara menyeduh.</p></div></div>
     </section>
     <section class="section section-muted" id="testimoni" hidden>
-      <div class="container"><div class="section-heading centered"><span class="eyebrow">Cerita pelanggan</span><h2>Apa kata mereka tentang Alqarni?</h2><p>Pengalaman pribadi pelanggan saat menikmati produk Alqarni.</p></div><div class="testimonial-grid" id="testimonialGrid" tabindex="0" role="region" aria-label="Testimoni pelanggan, geser untuk membaca ulasan lainnya"></div></div>
+      <div class="container"><div class="section-heading centered"><span class="eyebrow">Cerita pelanggan</span><h2>Apa kata mereka tentang Alqarni?</h2><p>Pengalaman pribadi pelanggan, bukan anjuran untuk mengganti pengobatan.</p></div><p id="testimonialStatus" role="status" hidden></p><button id="retryTestimonials" class="button button-secondary" type="button" hidden>Coba muat ulasan lagi</button><div class="testimonial-grid" id="testimonialGrid" tabindex="0" role="region" aria-label="Testimoni pelanggan, geser untuk membaca ulasan lainnya"></div></div>
     </section>
     <section class="section" id="cara-pesan">
       <div class="container"><div class="section-heading centered"><span class="eyebrow">Cara pemesanan</span><h2>Pilih. Kirim. Kami bantu.</h2><p>Pesan dari mana saja, langsung terhubung dengan admin Alqarni.</p></div><div class="steps-grid">
@@ -104,7 +107,7 @@
       <details><summary>Apakah produk dapat menyembuhkan penyakit?</summary><p>Alqarni merupakan produk pangan, bukan obat untuk menyembuhkan penyakit. Susu kambing dapat menjadi pelengkap asupan nutrisi dalam pola makan bergizi seimbang, bukan pengganti pengobatan atau saran tenaga kesehatan.</p></details>
     </div></div></section>
   </main>
-  <footer class="site-footer"><div class="container footer-grid"><div><span class="footer-wordmark">ALQARNI <small>GOAT MILK</small></span><p>Lengkapi nutrisi harian.<br />Nikmati hangatnya kebersamaan.</p></div><div><strong>Jelajahi</strong><a href="#produk">Pilihan produk</a><a href="#manfaat">Keunggulan Alqarni</a><a href="#faq">Pertanyaan umum</a></div><div><strong>Terhubung dengan kami</strong><a href="https://wa.me/6285163007381" target="_blank" rel="noopener noreferrer">+62 851-6300-7381</a><p>Pemesanan dan informasi produk<br />melalui WhatsApp.</p></div></div><div class="container footer-bottom"><span>© <span id="currentYear"></span> Alqarni Goat Milk.</span><span>Untuk momen hangat setiap hari.</span></div></footer>
+  <footer class="site-footer"><div class="container footer-grid"><div><span class="footer-wordmark">ALQARNI <small>GOAT MILK</small></span><p>Lengkapi nutrisi harian.<br />Nikmati hangatnya kebersamaan.</p></div><div><strong>Jelajahi</strong><a href="#produk">Pilihan produk</a><a href="#manfaat">Keunggulan Alqarni</a><a href="#faq">Pertanyaan umum</a></div><div><strong>Terhubung dengan kami</strong><a id="whatsappContact" target="_blank" rel="noopener noreferrer">Kontak sedang dimuat…</a><p>Pemesanan dan informasi produk<br />melalui WhatsApp.</p></div></div><div class="container footer-bottom"><span>© <span id="currentYear"></span> Alqarni Goat Milk.</span><span>Untuk momen hangat setiap hari.</span></div></footer>
   <button class="floating-whatsapp" type="button" data-whatsapp-general aria-label="Chat admin melalui WhatsApp"><svg class="icon" aria-hidden="true"><use href="assets/icons.svg#message-circle" /></svg><span>Chat Admin</span></button>
   <div class="drawer-backdrop" id="drawerBackdrop" hidden></div>
   <aside class="cart-drawer" id="cartDrawer" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="cartTitle" inert>
