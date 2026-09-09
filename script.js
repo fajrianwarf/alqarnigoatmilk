@@ -1,60 +1,6 @@
-const STORE_CONFIG = {
-  // Ganti dengan nomor WhatsApp toko, format internasional tanpa tanda +, spasi, atau strip.
-  whatsappNumber: '6281234567890',
-  storeName: 'Alqarni Goat Milk',
-};
-
-const products = [
-  {
-    id: 'sachet-250',
-    name: 'Alqarni Susu Kambing Premium Sachet',
-    size: '250 gram / 10 sachet',
-    description: 'Kemasan praktis untuk mencoba atau dibawa bepergian.',
-    price: 75000,
-    stockText: 'Ready stock',
-    badge: 'Terlaris',
-    image: 'assets/images/product-250g.svg',
-  },
-  {
-    id: 'pouch-500',
-    name: 'Alqarni Susu Kambing Standing Pouch',
-    size: '500 gram',
-    description: 'Kemasan lebih besar untuk penggunaan rutin di rumah.',
-    price: 135000,
-    stockText: 'Ready stock',
-    badge: 'Hemat',
-    image: 'assets/images/product-500g.svg',
-  },
-  {
-    id: 'bundle-2box',
-    name: 'Paket 2 Box Alqarni Susu Kambing',
-    size: '2 box sachet',
-    description: 'Paket pilihan untuk stok keluarga atau berbagi.',
-    price: 140000,
-    stockText: 'Stok terbatas',
-    badge: 'Paket',
-    image: 'assets/images/product-2box.svg',
-  },
-  {
-    id: 'bundle-2pouch',
-    name: 'Paket 2 Pouch Alqarni Goat Milk',
-    size: '2 × 500 gram',
-    description: 'Pilihan ekonomis dengan total isi satu kilogram.',
-    price: 219300,
-    stockText: 'Ready stock',
-    badge: 'Best value',
-    image: 'assets/images/product-2pouch.svg',
-  },
-];
-
-let cart = loadCart();
-
-const currencyFormatter = new Intl.NumberFormat('id-ID', {
-  style: 'currency',
-  currency: 'IDR',
-  maximumFractionDigits: 0,
-});
-
+const currencyFormatter = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 });
+const hasPrice = product => Number.isFinite(product.price) && product.price >= 0;
+const priceText = product => hasPrice(product) ? currencyFormatter.format(product.price) : 'Tanya harga';
 const productGrid = document.getElementById('productGrid');
 const productTemplate = document.getElementById('productCardTemplate');
 const cartButton = document.getElementById('cartButton');
@@ -65,209 +11,218 @@ const cartItems = document.getElementById('cartItems');
 const cartCount = document.getElementById('cartCount');
 const cartSubtotal = document.getElementById('cartSubtotal');
 const checkoutButton = document.getElementById('checkoutButton');
+let cart = loadCart();
+let previousFocus = null;
+let backgroundElements = [];
 
 function loadCart() {
   try {
-    const storedCart = localStorage.getItem('alqarni-cart');
-    return storedCart ? JSON.parse(storedCart) : [];
-  } catch (error) {
-    console.warn('Keranjang tidak dapat dibaca:', error);
-    return [];
-  }
+    const stored = JSON.parse(localStorage.getItem('alqarni-cart') || '[]');
+    if (!Array.isArray(stored)) return [];
+    const seen = new Set();
+    return stored.filter(item => {
+      if (!item || seen.has(item.productId) || !products.some(product => product.id === item.productId) ||
+          !Number.isInteger(item.quantity) || item.quantity < 1 || item.quantity > 999) return false;
+      seen.add(item.productId);
+      return true;
+    }).map(({ productId, quantity }) => ({ productId, quantity }));
+  } catch { return []; }
 }
-
 function saveCart() {
-  localStorage.setItem('alqarni-cart', JSON.stringify(cart));
+  try { localStorage.setItem('alqarni-cart', JSON.stringify(cart)); } catch { /* Keranjang tetap berfungsi selama halaman terbuka. */ }
 }
-
 function renderProducts() {
-  productGrid.innerHTML = '';
-
-  products.forEach((product) => {
+  productGrid.replaceChildren();
+  products.forEach(product => {
     const node = productTemplate.content.cloneNode(true);
-    const card = node.querySelector('.product-card');
-    const image = node.querySelector('.product-image');
-
-    card.dataset.productId = product.id;
-    image.src = product.image;
-    image.alt = `Foto ${product.name}`;
+    node.querySelector('.product-card').dataset.productId = product.id;
+    node.querySelector('.product-image').src = product.image;
+    node.querySelector('.product-image').alt = `${product.name}, ${product.size}`;
     node.querySelector('.product-badge').textContent = product.badge;
     node.querySelector('.product-size').textContent = product.size;
     node.querySelector('.product-name').textContent = product.name;
     node.querySelector('.product-description').textContent = product.description;
-    node.querySelector('.product-price').textContent = currencyFormatter.format(product.price);
-    node.querySelector('.product-stock').textContent = product.stockText;
-
-    node.querySelector('.add-to-cart').addEventListener('click', () => addToCart(product.id));
-    node.querySelector('.buy-now').addEventListener('click', () => orderSingleProduct(product.id));
-
-    productGrid.appendChild(node);
+    node.querySelector('.product-price').textContent = priceText(product);
+    const addButton = node.querySelector('.add-to-cart');
+    const buyButton = node.querySelector('.buy-now');
+    addButton.setAttribute('aria-label', `Tambahkan ${product.name} ke keranjang`);
+    buyButton.setAttribute('aria-label', `Pesan ${product.name} melalui WhatsApp`);
+    addButton.addEventListener('click', () => addToCart(product.id));
+    buyButton.addEventListener('click', () => orderSingleProduct(product.id));
+    productGrid.append(node);
   });
 }
-
 function addToCart(productId) {
-  const existingItem = cart.find((item) => item.productId === productId);
-
-  if (existingItem) {
-    existingItem.quantity += 1;
-  } else {
-    cart.push({ productId, quantity: 1 });
-  }
-
-  saveCart();
-  renderCart();
-  openCart();
+  const existing = cart.find(item => item.productId === productId);
+  if (existing) existing.quantity = Math.min(existing.quantity + 1, 999);
+  else cart.push({ productId, quantity: 1 });
+  saveCart(); renderCart(); openCart();
 }
-
 function updateQuantity(productId, change) {
-  const item = cart.find((cartItem) => cartItem.productId === productId);
+  const item = cart.find(item => item.productId === productId);
   if (!item) return;
-
-  item.quantity += change;
-
-  if (item.quantity <= 0) {
-    cart = cart.filter((cartItem) => cartItem.productId !== productId);
-  }
-
-  saveCart();
-  renderCart();
+  item.quantity = Math.min(item.quantity + change, 999);
+  if (item.quantity <= 0) cart = cart.filter(item => item.productId !== productId);
+  saveCart(); renderCart();
+  const target = cartItems.querySelector(`[data-product-id="${productId}"] [data-action="${change > 0 ? 'increase' : 'decrease'}"]`);
+  (target || closeCartButton).focus();
 }
-
-function removeFromCart(productId) {
-  cart = cart.filter((item) => item.productId !== productId);
-  saveCart();
-  renderCart();
-}
-
 function renderCart() {
   const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
   const subtotal = cart.reduce((sum, item) => {
-    const product = products.find((productItem) => productItem.id === item.productId);
-    return product ? sum + product.price * item.quantity : sum;
+    const product = products.find(product => product.id === item.productId);
+    return sum + (hasPrice(product) ? product.price * item.quantity : 0);
   }, 0);
-
+  const missingPrice = cart.some(item => !hasPrice(products.find(product => product.id === item.productId)));
   cartCount.textContent = totalItems;
-  cartSubtotal.textContent = currencyFormatter.format(subtotal);
+  cartButton.setAttribute('aria-label', `Buka keranjang, ${totalItems} produk`);
+  cartSubtotal.textContent = missingPrice ? 'Dikonfirmasi admin' : currencyFormatter.format(subtotal);
+  document.getElementById('cartNote').textContent = missingPrice
+    ? 'Ada produk yang harganya perlu dikonfirmasi. Admin akan memberikan total lengkap beserta ongkir.'
+    : 'Stok, ongkir, dan total akhir dikonfirmasi admin.';
   checkoutButton.disabled = cart.length === 0;
-  checkoutButton.style.opacity = cart.length === 0 ? '0.55' : '1';
-
-  if (cart.length === 0) {
-    cartItems.innerHTML = '<p class="empty-cart">Keranjang masih kosong. Pilih produk terlebih dahulu.</p>';
+  cartItems.replaceChildren();
+  if (!cart.length) {
+    const message = document.createElement('p');
+    message.className = 'empty-cart';
+    message.textContent = 'Keranjang masih kosong. Pilih produk untuk mulai memesan.';
+    cartItems.append(message);
     return;
   }
-
-  cartItems.innerHTML = '';
-
-  cart.forEach((item) => {
-    const product = products.find((productItem) => productItem.id === item.productId);
-    if (!product) return;
-
+  cart.forEach(item => {
+    const product = products.find(product => product.id === item.productId);
     const element = document.createElement('article');
     element.className = 'cart-item';
+    element.dataset.productId = product.id;
+    // Produk berasal dari konfigurasi lokal; data Sheets/testimoni tidak masuk ke template HTML ini.
     element.innerHTML = `
-      <img src="${product.image}" alt="Foto ${product.name}" />
-      <div>
-        <h3>${product.name}</h3>
-        <p>${currencyFormatter.format(product.price)}</p>
-        <div class="quantity-control" aria-label="Ubah jumlah ${product.name}">
-          <button type="button" data-action="decrease" aria-label="Kurangi jumlah">−</button>
+      <img src="${product.image}" alt="${product.name}" width="64" height="64" />
+      <div><h3>${product.name}</h3><p>${product.size} · ${priceText(product)}</p>
+        <div class="quantity-control" aria-label="Jumlah ${product.name}">
+          <button type="button" data-action="decrease" aria-label="Kurangi ${product.name}">−</button>
           <strong>${item.quantity}</strong>
-          <button type="button" data-action="increase" aria-label="Tambah jumlah">+</button>
+          <button type="button" data-action="increase" aria-label="Tambah ${product.name}" ${item.quantity === 999 ? 'disabled' : ''}>+</button>
         </div>
-      </div>
-      <button class="remove-item" type="button">Hapus</button>
-    `;
-
+      </div><button class="remove-item" type="button" aria-label="Hapus ${product.name} dari keranjang">Hapus</button>`;
     element.querySelector('[data-action="decrease"]').addEventListener('click', () => updateQuantity(product.id, -1));
     element.querySelector('[data-action="increase"]').addEventListener('click', () => updateQuantity(product.id, 1));
-    element.querySelector('.remove-item').addEventListener('click', () => removeFromCart(product.id));
-    cartItems.appendChild(element);
+    element.querySelector('.remove-item').addEventListener('click', () => {
+      cart = cart.filter(item => item.productId !== product.id);
+      saveCart(); renderCart(); closeCartButton.focus();
+    });
+    cartItems.append(element);
   });
 }
-
 function openCart() {
+  if (cartDrawer.classList.contains('open')) return;
+  previousFocus = document.activeElement;
+  backgroundElements = [...document.body.children].filter(element =>
+    ![cartDrawer, drawerBackdrop].includes(element) && !['SCRIPT','TEMPLATE'].includes(element.tagName) && !element.inert);
+  backgroundElements.forEach(element => { element.inert = true; });
+  cartDrawer.inert = false;
   cartDrawer.classList.add('open');
   cartDrawer.setAttribute('aria-hidden', 'false');
+  cartButton.setAttribute('aria-expanded', 'true');
   drawerBackdrop.hidden = false;
   document.body.style.overflow = 'hidden';
+  closeCartButton.focus();
 }
-
 function closeCart() {
+  if (!cartDrawer.classList.contains('open')) return;
+  backgroundElements.forEach(element => { element.inert = false; });
+  (previousFocus?.isConnected ? previousFocus : cartButton).focus();
+  cartDrawer.inert = true;
   cartDrawer.classList.remove('open');
   cartDrawer.setAttribute('aria-hidden', 'true');
+  cartButton.setAttribute('aria-expanded', 'false');
   drawerBackdrop.hidden = true;
   document.body.style.overflow = '';
 }
-
 function openWhatsApp(message) {
-  const encodedMessage = encodeURIComponent(message);
-  const url = `https://wa.me/${STORE_CONFIG.whatsappNumber}?text=${encodedMessage}`;
-  window.open(url, '_blank', 'noopener,noreferrer');
+  window.open(`https://wa.me/${STORE_CONFIG.whatsappNumber}?text=${encodeURIComponent(message)}`, '_blank', 'noopener,noreferrer');
 }
-
+const orderConfirmation = 'Mohon konfirmasi stok, total pembayaran, serta ongkir. Apakah alamat saya termasuk gratis ongkir Jogja dan sekitarnya via Wahana Express?';
 function orderSingleProduct(productId) {
-  const product = products.find((item) => item.id === productId);
+  const product = products.find(product => product.id === productId);
   if (!product) return;
-
   openWhatsApp([
-    `Halo ${STORE_CONFIG.storeName}, saya ingin memesan:`,
-    '',
-    `• ${product.name}`,
-    `• Varian: ${product.size}`,
-    `• Jumlah: 1`,
-    `• Harga produk: ${currencyFormatter.format(product.price)}`,
-    '',
-    'Mohon konfirmasi stok, ongkir, total pembayaran, dan opsi COD jika tersedia.',
+    `Halo ${STORE_CONFIG.storeName}, saya ingin memesan:`, '',
+    `• ${product.name}`, `• Varian: ${product.size}`, '• Jumlah: 1',
+    `• Harga produk: ${hasPrice(product) ? priceText(product) : 'Mohon info harga'}`, '',
+    'Alamat tujuan:', '', orderConfirmation,
   ].join('\n'));
 }
-
 function checkoutCart() {
-  if (cart.length === 0) return;
-
+  if (!cart.length) return;
   let subtotal = 0;
-  const productLines = cart.map((item, index) => {
-    const product = products.find((productItem) => productItem.id === item.productId);
-    if (!product) return '';
-
-    const lineTotal = product.price * item.quantity;
-    subtotal += lineTotal;
-    return `${index + 1}. ${product.name}\n   ${product.size} × ${item.quantity} = ${currencyFormatter.format(lineTotal)}`;
-  }).filter(Boolean);
-
+  let missingPrice = false;
+  const lines = cart.map((item,index) => {
+    const product = products.find(product => product.id === item.productId);
+    let total = 'Harga dikonfirmasi admin';
+    if (hasPrice(product)) {
+      subtotal += product.price * item.quantity;
+      total = currencyFormatter.format(product.price * item.quantity);
+    } else missingPrice = true;
+    return `${index + 1}. ${product.name}\n   ${product.size} × ${item.quantity} = ${total}`;
+  });
   openWhatsApp([
-    `Halo ${STORE_CONFIG.storeName}, saya ingin memesan produk berikut:`,
-    '',
-    ...productLines,
-    '',
-    `Subtotal produk: ${currencyFormatter.format(subtotal)}`,
-    '',
-    'Nama penerima:',
-    'Alamat lengkap:',
-    'Kecamatan/kota:',
-    'Kode pos:',
-    '',
-    'Mohon konfirmasi stok, ongkir, total pembayaran, dan opsi COD jika tersedia.',
+    `Halo ${STORE_CONFIG.storeName}, saya ingin memesan:`, '', ...lines, '',
+    missingPrice ? `Subtotal produk dengan harga tersedia: ${currencyFormatter.format(subtotal)} (belum termasuk produk yang perlu konfirmasi harga).`
+      : `Subtotal produk: ${currencyFormatter.format(subtotal)}`,
+    '', 'Nama penerima:', 'Alamat lengkap:', 'Kecamatan/kota:', 'Kode pos:', '', orderConfirmation,
   ].join('\n'));
 }
-
-function sendGeneralQuestion() {
-  openWhatsApp(`Halo ${STORE_CONFIG.storeName}, saya ingin bertanya mengenai produk susu kambing Alqarni.`);
+function renderTestimonials() {
+  const grid = document.getElementById('testimonialGrid');
+  const valid = testimonials.filter(review => typeof review.quote === 'string' && review.quote.trim() && typeof review.name === 'string' && review.name.trim());
+  if (!valid.length) return;
+  valid.forEach(review => {
+    const card = document.createElement('article');
+    card.className = 'testimonial-card';
+    card.innerHTML = '<svg class="icon" aria-hidden="true"><use href="assets/icons.svg#quote" /></svg>';
+    if (Number.isInteger(review.rating) && review.rating >= 1 && review.rating <= 5) {
+      const rating = document.createElement('div');
+      rating.className = 'testimonial-rating';
+      rating.setAttribute('aria-label', `${review.rating} dari 5 bintang`);
+      rating.textContent = '★'.repeat(review.rating);
+      card.append(rating);
+    }
+    const quote = document.createElement('blockquote');
+    quote.textContent = review.quote;
+    const name = document.createElement('cite');
+    name.textContent = review.name;
+    card.append(quote,name);
+    const product = products.find(product => product.id === review.productId);
+    if (product) {
+      const detail = document.createElement('a');
+      detail.className = 'testimonial-product';
+      detail.href = '#produk';
+      const image = document.createElement('img');
+      image.src = product.image; image.alt = product.name; image.loading = 'lazy'; image.width = 64; image.height = 64;
+      const label = document.createElement('span');
+      label.textContent = `${product.name} · ${product.size}`;
+      detail.append(image,label); card.append(detail);
+    }
+    grid.append(card);
+  });
+  document.getElementById('testimoni').hidden = false;
 }
-
 cartButton.addEventListener('click', openCart);
 closeCartButton.addEventListener('click', closeCart);
 drawerBackdrop.addEventListener('click', closeCart);
 checkoutButton.addEventListener('click', checkoutCart);
-
-document.querySelectorAll('[data-whatsapp-general]').forEach((button) => {
-  button.addEventListener('click', sendGeneralQuestion);
-});
-
-document.addEventListener('keydown', (event) => {
+document.querySelectorAll('[data-whatsapp-general]').forEach(button => button.addEventListener('click', () => openWhatsApp(`Halo ${STORE_CONFIG.storeName}, saya ingin bertanya mengenai produk Alqarni.`)));
+document.querySelectorAll('[data-whatsapp-order]').forEach(button => button.addEventListener('click', () => openWhatsApp(`Halo ${STORE_CONFIG.storeName}, saya ingin memesan susu kambing Alqarni. Mohon info pilihan kemasan, harga, dan stok yang tersedia.`)));
+document.querySelectorAll('[data-whatsapp-shipping]').forEach(button => button.addEventListener('click', () => openWhatsApp(`Halo ${STORE_CONFIG.storeName}, apakah alamat berikut termasuk gratis ongkir via Wahana Express?\n\nAlamat:\nKecamatan/kota:\nKode pos:`)));
+document.addEventListener('keydown', event => {
+  if (!cartDrawer.classList.contains('open')) return;
   if (event.key === 'Escape') closeCart();
+  if (event.key === 'Tab') {
+    const buttons = [...cartDrawer.querySelectorAll('button:not(:disabled), a[href]')];
+    const first = buttons[0], last = buttons[buttons.length - 1];
+    if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
+    else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
+  }
 });
-
 document.getElementById('currentYear').textContent = new Date().getFullYear();
-
-renderProducts();
-renderCart();
+renderProducts(); renderCart(); renderTestimonials(); initSales();
