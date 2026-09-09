@@ -144,44 +144,22 @@ function openWhatsApp(message) {
   if (!STORE_CONFIG.whatsappNumber) return;
   window.open(`https://wa.me/${STORE_CONFIG.whatsappNumber}?text=${encodeURIComponent(message)}`, '_blank', 'noopener,noreferrer');
 }
-const orderConfirmation = 'Mohon konfirmasi stok, total pembayaran, serta ongkir. Apakah alamat saya termasuk gratis ongkir Jogja dan sekitarnya via Wahana Express?';
 function orderSingleProduct(productId) {
   const product = products.find(product => product.id === productId);
-  if (!product) return;
-  openWhatsApp([
-    `Halo Admin, saya ingin memesan:`, '',
-    `• ${product.name}`, `• Varian: ${product.size}`, '• Jumlah: 1',
-    `• Harga produk: ${hasPrice(product) ? priceText(product) : 'Mohon info harga'}`, '',
-    'Alamat tujuan:', '', orderConfirmation,
-  ].join('\n'));
+  if (product) openWhatsApp(buildSingleOrderMessage(product));
 }
 function checkoutCart() {
-  if (!cart.length) return;
-  let subtotal = 0;
-  let missingPrice = false;
-  const lines = cart.map((item,index) => {
-    const product = products.find(product => product.id === item.productId);
-    let total = 'Harga dikonfirmasi admin';
-    if (hasPrice(product)) {
-      subtotal += product.price * item.quantity;
-      total = currencyFormatter.format(product.price * item.quantity);
-    } else missingPrice = true;
-    return `${index + 1}. ${product.name}\n   ${product.size} × ${item.quantity} = ${total}`;
-  });
-  openWhatsApp([
-    `Halo Admin, saya ingin memesan:`, '', ...lines, '',
-    missingPrice ? `Subtotal produk dengan harga tersedia: ${currencyFormatter.format(subtotal)} (belum termasuk produk yang perlu konfirmasi harga).`
-      : `Subtotal produk: ${currencyFormatter.format(subtotal)}`,
-    '', 'Nama penerima:', 'Alamat lengkap:', 'Kecamatan/kota:', 'Kode pos:', '', orderConfirmation,
-  ].join('\n'));
+  const items = cart.map(item => ({ product: products.find(product => product.id === item.productId), quantity: item.quantity }));
+  if (!items.length || items.some(item => !item.product)) return;
+  openWhatsApp(buildCartOrderMessage(items));
 }
 cartButton.addEventListener('click', openCart);
 closeCartButton.addEventListener('click', closeCart);
 drawerBackdrop.addEventListener('click', closeCart);
 checkoutButton.addEventListener('click', checkoutCart);
-document.querySelectorAll('[data-whatsapp-general]').forEach(button => button.addEventListener('click', () => openWhatsApp(`Halo Admin, saya ingin bertanya mengenai produk Alqarni.`)));
-document.querySelectorAll('[data-whatsapp-order]').forEach(button => button.addEventListener('click', () => openWhatsApp(`Halo Admin, saya ingin memesan susu kambing Alqarni. Mohon info pilihan kemasan, harga, dan stok yang tersedia.`)));
-document.querySelectorAll('[data-whatsapp-shipping]').forEach(button => button.addEventListener('click', () => openWhatsApp(`Halo Admin, apakah alamat berikut termasuk gratis ongkir via Wahana Express?\n\nAlamat:\nKecamatan/kota:\nKode pos:`)));
+document.querySelectorAll('[data-whatsapp-general]').forEach(button => button.addEventListener('click', () => openWhatsApp(`Halo, saya tertarik dengan Alqarni dan ingin tahu lebih lanjut tentang produknya. Bisa dibantu?`)));
+document.querySelectorAll('[data-whatsapp-order]').forEach(button => button.addEventListener('click', () => openWhatsApp(`Halo, saya ingin pesan Alqarni. Bisa bantu informasikan pilihan kemasan dan stok yang tersedia? Terima kasih.`)));
+document.querySelectorAll('[data-whatsapp-shipping]').forEach(button => button.addEventListener('click', () => openWhatsApp(`Halo, saya ingin pesan Alqarni. Apakah alamat saya termasuk area gratis ongkir via Wahana Express?\n\nAlamat:\nKecamatan/kota:\nKode pos:\n\nTerima kasih.`)));
 document.addEventListener('keydown', event => {
   if (!cartDrawer.classList.contains('open')) return;
   if (event.key === 'Escape') closeCart();

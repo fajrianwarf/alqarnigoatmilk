@@ -7,12 +7,14 @@
   <meta name="theme-color" content="#173f3b" />
   <title>Alqarni Goat Milk | Nutrisi Alami Keluarga</title>
   <link rel="icon" href="assets/images/logo.webp" type="image/webp" />
-  <link rel="stylesheet" href="styles.css" />
-  <script src="errors.js?v=sheets-3"></script>
-  <script src="config.js?v=sheets-3" defer></script>
-  <script src="sales.js?v=sheets-3" defer></script>
-  <script src="testimonials.js?v=sheets-3" defer></script>
-  <script src="script.js?v=sheets-3" defer></script>
+  <link rel="stylesheet" href="styles.css?v=ui-4" />
+  <script src="errors.js?v=ui-4"></script>
+  <script src="config.js?v=ui-4" defer></script>
+  <script src="sales.js?v=ui-4" defer></script>
+  <script src="testimonials.js?v=ui-4" defer></script>
+  <script src="whatsapp.js?v=ui-4" defer></script>
+  <script src="faq.js?v=ui-4" defer></script>
+  <script src="script.js?v=ui-4" defer></script>
 </head>
 <body>
   <div id="appError" class="app-error" role="alert" hidden><span id="appErrorText"></span><button id="reloadPage" type="button" class="button button-secondary">Muat ulang</button></div>
@@ -86,7 +88,7 @@
       </div>
     </section>
     <section class="section preparation-section">
-      <div class="container preparation-grid"><div><span class="eyebrow">Cara menikmati</span><h2>Rutinitas hangat,<br />sesederhana menyeduh.</h2></div><div class="serving-card"><svg class="icon" aria-hidden="true"><use href="assets/icons.svg#cup-soda" /></svg><strong>25 <small>gram / gelas</small></strong><span>2 kali sehari</span><p>Ikuti petunjuk penyajian pada kemasan untuk takaran air dan cara menyeduh.</p></div></div>
+      <div class="container preparation-grid"><div><span class="eyebrow">Cara menikmati</span><h2>Rutinitas hangat,<br />sesederhana menyeduh.</h2></div><div class="serving-card"><div class="serving-decoration" aria-hidden="true"><span></span><svg class="icon"><use href="assets/icons.svg#cup-soda" /></svg><span></span></div><dl class="serving-metrics"><div><dt>Takaran per gelas</dt><dd><strong>25</strong><span>gram</span></dd></div><div><dt>Frekuensi minum</dt><dd><strong>2</strong><span>kali sehari</span></dd></div></dl><p>Ikuti petunjuk penyajian pada kemasan untuk takaran air dan cara menyeduh.</p></div></div>
     </section>
     <section class="section section-muted" id="testimoni" hidden>
       <div class="container"><div class="section-heading centered"><span class="eyebrow">Cerita pelanggan</span><h2>Apa kata mereka tentang Alqarni?</h2><p>Pengalaman pribadi pelanggan, bukan anjuran untuk mengganti pengobatan.</p></div><p id="testimonialStatus" role="status" hidden></p><button id="retryTestimonials" class="button button-secondary" type="button" hidden>Coba muat ulasan lagi</button><div class="testimonial-grid" id="testimonialGrid" tabindex="0" role="region" aria-label="Testimoni pelanggan, geser untuk membaca ulasan lainnya"></div></div>
@@ -100,11 +102,11 @@
     </section>
     <section class="shipping-section"><div class="container shipping-inner"><svg class="icon" aria-hidden="true"><use href="assets/icons.svg#truck" /></svg><div><span class="eyebrow">Lebih dekat, lebih mudah</span><h2>Gratis ongkir Jogja &amp; sekitarnya.</h2><p>Pengiriman melalui Wahana Express. Hubungi admin untuk memastikan cakupan wilayah dan ketentuan gratis ongkir.</p></div><button class="button button-light" type="button" data-whatsapp-shipping>Cek alamat saya <svg class="icon" aria-hidden="true"><use href="assets/icons.svg#arrow-up-right" /></svg></button></div></section>
     <section class="section section-muted" id="faq"><div class="container faq-layout"><div><span class="eyebrow">Pertanyaan umum</span><h2>Kenali Alqarni<br />lebih dekat.</h2><p>Masih ada yang ingin ditanyakan? Admin kami siap membantu.</p><button class="text-button" type="button" data-whatsapp-general>Tanya melalui WhatsApp <svg class="icon" aria-hidden="true"><use href="assets/icons.svg#arrow-up-right" /></svg></button></div><div class="faq-list">
-      <details open><summary>Bagaimana cara melakukan pembayaran?</summary><p>Setelah pesanan dikirim melalui WhatsApp, admin akan mengonfirmasi stok dan total akhir, lalu memberikan instruksi pembayaran.</p></details>
-      <details><summary>Apakah tersedia gratis ongkir?</summary><p>Tersedia gratis ongkir Jogja dan sekitarnya melalui Wahana Express. Konfirmasikan alamat serta ketentuan promo kepada admin sebelum melakukan pembayaran.</p></details>
-      <details><summary>Kapan pesanan saya dikirim?</summary><p>Admin akan mengonfirmasi jadwal pengiriman setelah pesanan dan pembayaran diperiksa. Lama perjalanan mengikuti alamat tujuan dan layanan kurir.</p></details>
-      <details><summary>Bagaimana aturan minumnya?</summary><p>2 kali sehari, 25 gram per gelas. Ikuti petunjuk penyajian pada kemasan. Untuk kondisi kesehatan tertentu, konsultasikan penggunaannya dengan tenaga kesehatan.</p></details>
-      <details><summary>Apakah produk dapat menyembuhkan penyakit?</summary><p>Alqarni merupakan produk pangan, bukan obat untuk menyembuhkan penyakit. Susu kambing dapat menjadi pelengkap asupan nutrisi dalam pola makan bergizi seimbang, bukan pengganti pengobatan atau saran tenaga kesehatan.</p></details>
+      <details open><summary>Bagaimana cara melakukan pembayaran?</summary><div class="faq-answer"><p>Setelah pesanan dikirim melalui WhatsApp, admin akan mengonfirmasi stok dan total akhir, lalu memberikan instruksi pembayaran.</p></div></details>
+      <details><summary>Apakah tersedia gratis ongkir?</summary><div class="faq-answer"><p>Tersedia gratis ongkir Jogja dan sekitarnya melalui Wahana Express. Konfirmasikan alamat serta ketentuan promo kepada admin sebelum melakukan pembayaran.</p></div></details>
+      <details><summary>Kapan pesanan saya dikirim?</summary><div class="faq-answer"><p>Admin akan mengonfirmasi jadwal pengiriman setelah pesanan dan pembayaran diperiksa. Lama perjalanan mengikuti alamat tujuan dan layanan kurir.</p></div></details>
+      <details><summary>Bagaimana aturan minumnya?</summary><div class="faq-answer"><p>2 kali sehari, 25 gram per gelas. Ikuti petunjuk penyajian pada kemasan. Untuk kondisi kesehatan tertentu, konsultasikan penggunaannya dengan tenaga kesehatan.</p></div></details>
+      <details><summary>Apakah produk dapat menyembuhkan penyakit?</summary><div class="faq-answer"><p>Alqarni merupakan produk pangan, bukan obat untuk menyembuhkan penyakit. Susu kambing dapat menjadi pelengkap asupan nutrisi dalam pola makan bergizi seimbang, bukan pengganti pengobatan atau saran tenaga kesehatan.</p></div></details>
     </div></div></section>
   </main>
   <footer class="site-footer"><div class="container footer-grid"><div><span class="footer-wordmark">ALQARNI <small>GOAT MILK</small></span><p>Lengkapi nutrisi harian.<br />Nikmati hangatnya kebersamaan.</p></div><div><strong>Jelajahi</strong><a href="#produk">Pilihan produk</a><a href="#manfaat">Keunggulan Alqarni</a><a href="#faq">Pertanyaan umum</a></div><div><strong>Terhubung dengan kami</strong><a id="whatsappContact" target="_blank" rel="noopener noreferrer">Kontak sedang dimuat…</a><p>Pemesanan dan informasi produk<br />melalui WhatsApp.</p></div></div><div class="container footer-bottom"><span>© <span id="currentYear"></span> Alqarni Goat Milk.</span><span>Untuk momen hangat setiap hari.</span></div></footer>

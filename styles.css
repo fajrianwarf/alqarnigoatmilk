@@ -109,17 +109,23 @@ h1 em { color: var(--gold); font-weight: 400; }
 .feature-note p { color: var(--ink); font-family: Georgia,serif; font-size: 30px; line-height: 1.2; margin: 12px 0 0; }
 .feature-content > p { font-size: 14px; }
 .benefit-list { border-top: 1px solid var(--line); margin-top: 24px; }
-.benefit-list article { display: grid; grid-template-columns: 28px 1fr; gap: 15px; padding: 17px 0; border-bottom: 1px solid var(--line); }
-.benefit-list article > span { color: var(--gold); font-size: 11px; padding-top: 3px; }
-.benefit-list h3 { font-size: 14px; margin: 0 0 5px; font-weight: 650; }
-.benefit-list p { font-size: 12px; margin: 0; }
+.benefit-list article { display: grid; grid-template-columns: 40px 1fr; gap: 16px; padding: 20px 0; border-bottom: 1px solid var(--line); }
+.benefit-list article > span { color: var(--gold); font-size: 24px; line-height: 1.2; font-weight: 500; font-variant-numeric: tabular-nums; padding-top: 0; }
+.benefit-list h3 { font-size: 17px; margin: 0 0 5px; font-weight: 650; }
+.benefit-list p { font-size: 15px; margin: 0; }
 .preparation-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 70px; align-items: center; }
-.serving-card { display: grid; grid-template-columns: 48px 1fr; gap: 0 20px; align-items: center; padding: 32px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--cream); }
-.serving-card > .icon { grid-row: span 2; width: 40px; height: 40px; color: var(--gold); }
-.serving-card strong { font-size: 38px; line-height: 1.3; font-weight: 500; }
-.serving-card strong small { font-size: 15px; }
-.serving-card > span { font-size: 13px; }
-.serving-card p { grid-column: 1/-1; border-top: 1px solid var(--line); padding-top: 16px; margin: 18px 0 0; font-size: 12px; }
+.serving-card { padding: 30px 32px; border: 1px solid #ded5bf; border-radius: 24px; background: linear-gradient(150deg, #fcfbf6, var(--cream)); box-shadow: 0 12px 32px rgba(23,63,59,.04); }
+.serving-decoration { display: flex; justify-content: center; align-items: center; gap: 16px; margin-bottom: 25px; color: var(--gold); }
+.serving-decoration > span { width: 42px; height: 1px; background: #d7c6a8; }
+.serving-decoration .icon { width: 30px; height: 30px; }
+.serving-metrics { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); margin: 0; text-align: center; }
+.serving-metrics > div { padding: 0 12px; }
+.serving-metrics > div + div { border-left: 1px solid #ded5bf; }
+.serving-metrics dt { font-size: 13px; color: var(--ink-soft); }
+.serving-metrics dd { margin: 12px 0 0; }
+.serving-metrics strong { display: block; font-family: Georgia,serif; font-size: 56px; line-height: 1; font-weight: 400; letter-spacing: -.04em; }
+.serving-metrics dd > span { display: block; margin-top: 8px; font-size: 15px; }
+.serving-card > p { margin: 26px 0 0; padding-top: 20px; border-top: 1px solid #ded5bf; font-size: 13px; line-height: 1.65; text-align: center; }
 .testimonial-grid { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 22px; }
 .testimonial-card { display: flex; flex-direction: column; align-items: center; padding: 28px; border: 1px solid var(--line); border-radius: var(--radius); background: white; text-align: center; }
 .testimonial-card > .icon { color: var(--gold); width: 30px; height: 30px; }
@@ -149,7 +155,8 @@ h1 em { color: var(--gold); font-weight: 400; }
 .faq-list summary::-webkit-details-marker { display: none; }
 .faq-list summary::after { content: '+'; position: absolute; right: 3px; top: 17px; font-size: 22px; color: var(--gold); font-weight: 400; }
 .faq-list details[open] summary::after { content: '−'; }
-.faq-list p { margin: -4px 28px 22px 0; font-size: 13px; }
+.faq-answer { overflow: hidden; }
+.faq-list p { margin: 0; padding: 0 28px 22px 0; font-size: 13px; }
 .site-footer { background: #11302c; color: #d2ded5; padding-top: 60px; }
 .footer-grid { display: grid; grid-template-columns: 1.3fr 1fr 1fr; gap: 40px; }
 .footer-wordmark { font-size: 29px; color: #e8e5d7; letter-spacing: .08em; }
@@ -233,7 +240,12 @@ h1 em { color: var(--gold); font-weight: 400; }
   .feature-visual { max-width: 420px; margin-inline: auto; }
   .feature-content { grid-row: 1; }
   .feature-note p { font-size: 27px; }
-  .serving-card { padding: 26px; }
+  .benefit-list article { grid-template-columns: 34px 1fr; gap: 12px; }
+  .benefit-list article > span { font-size: 22px; }
+  .benefit-list h3 { font-size: 16px; }
+  .serving-card { padding: 26px 18px; }
+  .serving-metrics > div { padding-inline: 8px; }
+  .serving-metrics strong { font-size: 48px; }
   .steps-grid { grid-template-columns: 1fr; gap: 24px; margin-top: 32px; }
   .steps-grid article { display: grid; grid-template-columns: 42px 1fr; gap: 0 16px; padding-top: 18px; }
   .steps-grid article > span { grid-row: span 2; }
