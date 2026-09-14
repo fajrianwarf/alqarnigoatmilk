@@ -159,7 +159,7 @@ drawerBackdrop.addEventListener('click', closeCart);
 checkoutButton.addEventListener('click', checkoutCart);
 document.querySelectorAll('[data-whatsapp-general]').forEach(button => button.addEventListener('click', () => openWhatsApp(`Halo, saya tertarik dengan Alqarni dan ingin tahu lebih lanjut tentang produknya. Bisa dibantu?`)));
 document.querySelectorAll('[data-whatsapp-order]').forEach(button => button.addEventListener('click', () => openWhatsApp(`Halo, saya ingin pesan Alqarni. Bisa bantu informasikan pilihan kemasan dan stok yang tersedia? Terima kasih.`)));
-document.querySelectorAll('[data-whatsapp-shipping]').forEach(button => button.addEventListener('click', () => openWhatsApp(`Halo, saya ingin pesan Alqarni. Apakah alamat saya termasuk area gratis ongkir via Wahana Express?\n\nAlamat:\nKecamatan/kota:\nKode pos:\n\nTerima kasih.`)));
+document.querySelectorAll('[data-whatsapp-shipping]').forEach(button => button.addEventListener('click', () => openWhatsApp(`Halo, saya ingin pesan Alqarni. Apakah alamat saya termasuk area gratis ongkir ?\n\nAlamat:\nKecamatan/kota:\nKode pos:\n\nTerima kasih.`)));
 document.addEventListener('keydown', event => {
   if (!cartDrawer.classList.contains('open')) return;
   if (event.key === 'Escape') closeCart();
