@@ -15,6 +15,25 @@ let cart = [];
 let previousFocus = null;
 let backgroundElements = [];
 
+function analyticsItem(product, quantity = 1) {
+  const item = {
+    item_id: product.id,
+    item_name: product.name,
+    item_variant: product.size,
+    quantity,
+  };
+  if (hasPrice(product)) item.price = product.price;
+  return item;
+}
+function trackCommerceEvent(name, items) {
+  const knownValue = items.reduce((total, item) => total + (hasPrice(item.product) ? item.product.price * item.quantity : 0), 0);
+  window.trackAnalyticsEvent?.(name, {
+    currency: 'IDR',
+    value: knownValue || undefined,
+    items: items.map(item => analyticsItem(item.product, item.quantity)),
+  });
+}
+
 function loadCart() {
   try {
     const stored = JSON.parse(localStorage.getItem('alqarni-cart') || '[]');
@@ -54,15 +73,19 @@ function renderProducts() {
 }
 function addToCart(productId) {
   if (storeLoading || !products.some(product => product.id === productId)) return;
+  const product = products.find(product => product.id === productId);
   const existing = cart.find(item => item.productId === productId);
   if (existing) existing.quantity = Math.min(existing.quantity + 1, 999);
   else cart.push({ productId, quantity: 1 });
+  trackCommerceEvent('add_to_cart', [{ product, quantity: 1 }]);
   saveCart(); renderCart(); openCart();
 }
 function updateQuantity(productId, change) {
   const item = cart.find(item => item.productId === productId);
   if (!item) return;
+  const product = products.find(product => product.id === productId);
   item.quantity = Math.min(item.quantity + change, 999);
+  trackCommerceEvent(change > 0 ? 'add_to_cart' : 'remove_from_cart', [{ product, quantity: 1 }]);
   if (item.quantity <= 0) cart = cart.filter(item => item.productId !== productId);
   saveCart(); renderCart();
   const target = cartItems.querySelector(`[data-product-id="${CSS.escape(productId)}"] [data-action="${change > 0 ? 'increase' : 'decrease'}"]`);
@@ -108,6 +131,7 @@ function renderCart() {
     element.querySelector('[data-action="decrease"]').addEventListener('click', () => updateQuantity(product.id, -1));
     element.querySelector('[data-action="increase"]').addEventListener('click', () => updateQuantity(product.id, 1));
     element.querySelector('.remove-item').addEventListener('click', () => {
+      trackCommerceEvent('remove_from_cart', [{ product, quantity: item.quantity }]);
       cart = cart.filter(item => item.productId !== product.id);
       saveCart(); renderCart(); closeCartButton.focus();
     });
@@ -116,6 +140,13 @@ function renderCart() {
 }
 function openCart() {
   if (cartDrawer.classList.contains('open')) return;
+  const items = cart.map(item => ({ product: products.find(product => product.id === item.productId), quantity: item.quantity }))
+    .filter(item => item.product);
+  window.trackAnalyticsEvent?.('view_cart', {
+    currency: 'IDR',
+    value: items.reduce((total, item) => total + (hasPrice(item.product) ? item.product.price * item.quantity : 0), 0) || undefined,
+    items: items.map(item => analyticsItem(item.product, item.quantity)),
+  });
   previousFocus = document.activeElement;
   backgroundElements = [...document.body.children].filter(element =>
     ![cartDrawer, drawerBackdrop].includes(element) && !['SCRIPT','TEMPLATE'].includes(element.tagName) && !element.inert);
@@ -146,20 +177,37 @@ function openWhatsApp(message) {
 }
 function orderSingleProduct(productId) {
   const product = products.find(product => product.id === productId);
-  if (product) openWhatsApp(buildSingleOrderMessage(product));
+  if (product) {
+    trackCommerceEvent('begin_checkout', [{ product, quantity: 1 }]);
+    window.trackAnalyticsEvent?.('whatsapp_click', { click_location: 'product_card', product_id: product.id, product_name: product.name });
+    openWhatsApp(buildSingleOrderMessage(product));
+  }
 }
 function checkoutCart() {
   const items = cart.map(item => ({ product: products.find(product => product.id === item.productId), quantity: item.quantity }));
   if (!items.length || items.some(item => !item.product)) return;
+  trackCommerceEvent('begin_checkout', items);
+  window.trackAnalyticsEvent?.('whatsapp_click', { click_location: 'cart_checkout', item_count: items.reduce((total, item) => total + item.quantity, 0) });
   openWhatsApp(buildCartOrderMessage(items));
 }
 cartButton.addEventListener('click', openCart);
 closeCartButton.addEventListener('click', closeCart);
 drawerBackdrop.addEventListener('click', closeCart);
 checkoutButton.addEventListener('click', checkoutCart);
-document.querySelectorAll('[data-whatsapp-general]').forEach(button => button.addEventListener('click', () => openWhatsApp(`Halo, saya tertarik dengan Alqarni dan ingin tahu lebih lanjut tentang produknya. Bisa dibantu?`)));
-document.querySelectorAll('[data-whatsapp-order]').forEach(button => button.addEventListener('click', () => openWhatsApp(`Halo, saya ingin pesan Alqarni. Bisa bantu informasikan pilihan kemasan dan stok yang tersedia? Terima kasih.`)));
-document.querySelectorAll('[data-whatsapp-shipping]').forEach(button => button.addEventListener('click', () => openWhatsApp(`Halo, saya ingin pesan Alqarni. Apakah alamat saya termasuk area gratis ongkir ?\n\nAlamat:\nKecamatan/kota:\nKode pos:\n\nTerima kasih.`)));
+document.querySelectorAll('[data-whatsapp-general]').forEach(button => button.addEventListener('click', () => {
+  const clickLocation = button.closest('#faq') ? 'faq' : button.closest('.hero') ? 'hero_secondary' : 'floating_button';
+  window.trackAnalyticsEvent?.('whatsapp_click', { click_location: clickLocation });
+  openWhatsApp(`Halo, saya tertarik dengan Alqarni dan ingin tahu lebih lanjut tentang produknya. Bisa dibantu?`);
+}));
+document.querySelectorAll('[data-whatsapp-order]').forEach(button => button.addEventListener('click', () => {
+  window.trackAnalyticsEvent?.('whatsapp_click', { click_location: 'hero_primary' });
+  openWhatsApp(`Halo, saya ingin pesan Alqarni. Bisa bantu informasikan pilihan kemasan dan stok yang tersedia? Terima kasih.`);
+}));
+document.querySelectorAll('[data-whatsapp-shipping]').forEach(button => button.addEventListener('click', () => {
+  window.trackAnalyticsEvent?.('shipping_check_click', { click_location: 'shipping_section' });
+  window.trackAnalyticsEvent?.('whatsapp_click', { click_location: 'shipping_section' });
+  openWhatsApp(`Halo, saya ingin pesan Alqarni. Apakah alamat saya termasuk area gratis ongkir ?\n\nAlamat:\nKecamatan/kota:\nKode pos:\n\nTerima kasih.`);
+}));
 document.addEventListener('keydown', event => {
   if (!cartDrawer.classList.contains('open')) return;
   if (event.key === 'Escape') closeCart();

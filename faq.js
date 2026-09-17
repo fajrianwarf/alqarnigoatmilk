@@ -20,6 +20,7 @@ document.querySelectorAll('.faq-list details').forEach(details => {
     const height = details.open ? answer.getBoundingClientRect().height : 0;
     const opacity = details.open ? Number(getComputedStyle(answer).opacity) : 0;
     targetOpen = !targetOpen;
+    if (targetOpen) window.trackAnalyticsEvent?.('faq_open', { question: summary.textContent.trim() });
     if (animation) { animation.onfinish = null; animation.cancel(); animation = null; }
     if (reducedMotion.matches || typeof answer.animate !== 'function') { finish(); return; }
     details.open = true;
